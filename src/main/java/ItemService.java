@@ -5,12 +5,10 @@ class ItemService {
 
     Item save(Item item)throws BadRequestException{
 
-        itemDAO.save(item);
-
-        return item;
+        return itemDAO.save(item);
     }
 
-    void update(Item item){
+    void update(Item item)throws BadRequestException{
 
         itemDAO.update(item);
     }
@@ -20,7 +18,7 @@ class ItemService {
         itemDAO.delete(id);
     }
 
-    Item findById(Long id){
+    Item findById(Long id)throws BadRequestException{
 
         return itemDAO.findById(id);
     }

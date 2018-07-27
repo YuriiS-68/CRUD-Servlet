@@ -12,45 +12,48 @@ class ItemDAO {
 
     private static final String SQL_GET_ITEM_BY_ID = "SELECT * FROM ITEM WHERE ID = ?";
 
-    Item save(Item item)throws BadRequestException{
+    Item save(Item item)throws BadRequestException {
 
         Transaction transaction = null;
-        try(Session session = createSessionFactory().openSession()) {
+        try(Session session = createSessionFactory().openSession()){
             transaction = session.getTransaction();
+
             transaction.begin();
 
-            if (item.getId() == null){
+            session.save(item);
 
-                session.save(item);
-
-                transaction.commit();
-            }
-            else
-                throw new BadRequestException("Item with id " + item.getId() + " can`t be registered in the database");
+            transaction.commit();
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
 
             if (transaction != null)
                 transaction.rollback();
+
+            throw new BadRequestException("Save is failed");
         }
         return item;
     }
 
-    void update(Item item){
+    void update(Item item)throws BadRequestException{
 
         Transaction transaction = null;
         try (Session session = createSessionFactory().openSession()){
             transaction = session.getTransaction();
+
             transaction.begin();
 
             session.update(item);
 
             transaction.commit();
+
         }catch (HibernateException e){
             System.err.println(e.getMessage());
+
             if (transaction != null)
                 transaction.rollback();
+
+            throw new BadRequestException("Updating is failed");
         }
     }
 
@@ -59,39 +62,38 @@ class ItemDAO {
         Transaction transaction = null;
         try (Session session = createSessionFactory().openSession()){
             transaction = session.getTransaction();
+
             transaction.begin();
 
-            if (findById(id) != null){
-                session.delete(findById(id));
+            session.delete(findById(id));
 
-                transaction.commit();
-            }
-            else
-                throw new BadRequestException("Item with id " + id + " in the database not found");
+            transaction.commit();
+
         }catch (HibernateException e){
             System.err.println(e.getMessage());
 
             if (transaction != null)
                 transaction.rollback();
+
+            throw new BadRequestException("Delete is failed");
         }
     }
 
     @SuppressWarnings("unchecked")
-    Item findById(Long id){
+    Item findById(Long id)throws BadRequestException{
 
-        Item item;
+        if (id != null){
+            try (Session session = createSessionFactory().openSession()){
 
-        try (Session session = createSessionFactory().openSession()){
+                NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_BY_ID);
 
-            NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_BY_ID);
-            item = (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
+                return  (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
 
-        }catch (HibernateException e){
-            System.err.println(e.getMessage());
-
-            throw e;
+            }catch (HibernateException e){
+                System.err.println(e.getMessage());
+            }
         }
-        return item;
+        throw new BadRequestException("Item with id: " + id + " is not exist in DB.");
     }
 
     private static SessionFactory createSessionFactory(){

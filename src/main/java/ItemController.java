@@ -5,7 +5,14 @@ class ItemController {
 
     Item save(Item item)throws BadRequestException{
 
-        return itemService.save(item);
+        if (item.getId() == null){
+
+            validationObject(item);
+
+            return itemService.save(item);
+        }
+        else
+            throw new BadRequestException("Item with id " + item.getId() + " can`t be registered in the database");
     }
 
     void update(Item item)throws BadRequestException{
@@ -17,10 +24,15 @@ class ItemController {
 
     void delete(Long id)throws BadRequestException{
 
-        itemService.delete(id);
+        if (findById(id) != null){
+
+            itemService.delete(id);
+        }
+        else
+            throw new BadRequestException("Item with id " + id + " in the database not found");
     }
 
-    Item findById(Long id){
+    Item findById(Long id)throws BadRequestException{
 
         return itemService.findById(id);
     }
@@ -30,15 +42,15 @@ class ItemController {
             throw new NullPointerException("Item is not existing");
 
         if (item.getName() == null)
-            throw new BadRequestException("The object Name is not filled");
+            throw new BadRequestException("Object field Name is missing.");
 
         if (item.getDateCreated() == null)
-            throw new BadRequestException("The object DateCreated is not filled");
+            throw new BadRequestException("Object field DateCreated is missing.");
 
         if (item.getLastUpdateDate() == null)
-            throw new BadRequestException("The object LastUpdateDate is not filled");
+            throw new BadRequestException("Object field LastUpdateDate is missing.");
 
         if (item.getDescription() == null)
-            throw new BadRequestException("The object Description is not filled");
+            throw new BadRequestException("Object field Description is missing.");
     }
 }

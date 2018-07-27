@@ -15,12 +15,12 @@ public class MyServlet extends HttpServlet {
 
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp){
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)throws IOException{
 
         try {
             resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
 
-        } catch (IOException e) {
+        } catch (BadRequestException e) {
             e.printStackTrace();
         }
     }
