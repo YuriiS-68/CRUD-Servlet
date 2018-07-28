@@ -34,7 +34,11 @@ class ItemController {
 
     Item findById(Long id)throws BadRequestException{
 
-        return itemService.findById(id);
+        if (id != null){
+
+            return itemService.findById(id);
+        }
+        throw new BadRequestException("Item with id: " + id + " is not exist in DB.");
     }
 
     private void validationObject(Item item)throws BadRequestException{

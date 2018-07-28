@@ -13,12 +13,12 @@ class ItemService {
         itemDAO.update(item);
     }
 
-    void delete(Long id)throws BadRequestException{
+    void delete(Long id){
 
         itemDAO.delete(id);
     }
 
-    Item findById(Long id)throws BadRequestException{
+    Item findById(Long id){
 
         return itemDAO.findById(id);
     }

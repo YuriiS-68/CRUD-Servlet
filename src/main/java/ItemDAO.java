@@ -55,7 +55,7 @@ class ItemDAO {
         }
     }
 
-    void delete(Long id)throws BadRequestException{
+    void delete(Long id){
 
         Transaction transaction = null;
         try (Session session = createSessionFactory().openSession()){
@@ -77,21 +77,21 @@ class ItemDAO {
     }
 
     @SuppressWarnings("unchecked")
-    Item findById(Long id)throws BadRequestException{
+    Item findById(Long id){
 
-        if (id != null){
-            try (Session session = createSessionFactory().openSession()){
+        Item item = null;
 
-                NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_BY_ID);
+        try (Session session = createSessionFactory().openSession()){
 
-                return  (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
+            NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_BY_ID);
 
-            }catch (HibernateException e){
+            item = (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
 
-                System.err.println(e.getMessage());
-            }
+        }catch (HibernateException e){
+
+            System.err.println(e.getMessage());
         }
-        throw new BadRequestException("Item with id: " + id + " is not exist in DB.");
+        return item;
     }
 
     private static SessionFactory createSessionFactory(){
