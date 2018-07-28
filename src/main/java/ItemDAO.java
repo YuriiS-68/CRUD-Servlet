@@ -12,7 +12,7 @@ class ItemDAO {
 
     private static final String SQL_GET_ITEM_BY_ID = "SELECT * FROM ITEM WHERE ID = ?";
 
-    Item save(Item item)throws BadRequestException {
+    Item save(Item item) {
 
         Transaction transaction = null;
         try(Session session = createSessionFactory().openSession()){
@@ -25,17 +25,16 @@ class ItemDAO {
             transaction.commit();
 
         }catch (HibernateException e){
+
             System.err.println(e.getMessage());
 
             if (transaction != null)
                 transaction.rollback();
-
-            throw new BadRequestException("Save is failed");
         }
         return item;
     }
 
-    void update(Item item)throws BadRequestException{
+    void update(Item item){
 
         Transaction transaction = null;
         try (Session session = createSessionFactory().openSession()){
@@ -48,12 +47,11 @@ class ItemDAO {
             transaction.commit();
 
         }catch (HibernateException e){
+
             System.err.println(e.getMessage());
 
             if (transaction != null)
                 transaction.rollback();
-
-            throw new BadRequestException("Updating is failed");
         }
     }
 
@@ -70,12 +68,11 @@ class ItemDAO {
             transaction.commit();
 
         }catch (HibernateException e){
+
             System.err.println(e.getMessage());
 
             if (transaction != null)
                 transaction.rollback();
-
-            throw new BadRequestException("Delete is failed");
         }
     }
 
@@ -90,6 +87,7 @@ class ItemDAO {
                 return  (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
 
             }catch (HibernateException e){
+
                 System.err.println(e.getMessage());
             }
         }

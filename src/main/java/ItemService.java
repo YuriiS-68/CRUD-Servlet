@@ -3,12 +3,12 @@ class ItemService {
 
     private ItemDAO itemDAO = new ItemDAO();
 
-    Item save(Item item)throws BadRequestException{
+    Item save(Item item){
 
         return itemDAO.save(item);
     }
 
-    void update(Item item)throws BadRequestException{
+    void update(Item item){
 
         itemDAO.update(item);
     }
