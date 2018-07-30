@@ -1,3 +1,4 @@
+import java.util.List;
 
 class ItemService {
 
@@ -21,5 +22,10 @@ class ItemService {
     Item findById(Long id){
 
         return itemDAO.findById(id);
+    }
+
+    List<Item> getAllFiles(){
+
+        return itemDAO.getAllFiles();
     }
 }

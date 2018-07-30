@@ -6,11 +6,14 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.NativeQuery;
 
+import java.util.List;
+
 class ItemDAO {
 
     private static SessionFactory sessionFactory;
 
     private static final String SQL_GET_ITEM_BY_ID = "SELECT * FROM ITEM WHERE ID = ?";
+    private static final String SQL_GET_ITEM_ALL = "SELECT * FROM ITEM";
 
     Item save(Item item) {
 
@@ -32,6 +35,25 @@ class ItemDAO {
                 transaction.rollback();
         }
         return item;
+    }
+
+    @SuppressWarnings("unchecked")
+    List<Item> getAllFiles(){
+
+        List<Item> items = null;
+
+        try (Session session = createSessionFactory().openSession()){
+
+            NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_ALL);
+            items = query.addEntity(Item.class).list();
+
+        }catch (HibernateException e){
+
+            System.err.println(e.getMessage());
+
+        }
+
+        return items;
     }
 
     void update(Item item){

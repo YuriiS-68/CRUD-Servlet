@@ -13,12 +13,16 @@ public class MyServlet extends HttpServlet {
 
     private ItemController controller = new ItemController();
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)throws IOException{
+        String action = req.getParameter("param");
 
         try {
-            resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
+            if (action.equalsIgnoreCase("list")){
+                resp.getWriter().print(controller.getAllFiles());
+            }
+            else
+                resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
 
         } catch (BadRequestException e) {
             e.printStackTrace();

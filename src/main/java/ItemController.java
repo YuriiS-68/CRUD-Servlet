@@ -1,3 +1,4 @@
+import java.util.List;
 
 class ItemController {
 
@@ -41,6 +42,10 @@ class ItemController {
         throw new BadRequestException("Item with id: " + id + " is not exist in DB.");
     }
 
+    List<Item> getAllFiles(){
+
+        return itemService.getAllFiles();
+    }
     private void validationObject(Item item)throws BadRequestException{
         if (item == null)
             throw new NullPointerException("Item is not existing");
