@@ -1,3 +1,5 @@
+import org.hibernate.HibernateException;
+
 import java.util.List;
 
 class ItemService {
@@ -6,26 +8,62 @@ class ItemService {
 
     Item save(Item item){
 
-        return itemDAO.save(item);
+        try {
+
+            itemDAO.save(item);
+
+        }catch (HibernateException e){
+            System.err.println("Operation failed");
+            throw e;
+        }
+        return item;
     }
 
     void update(Item item){
 
-        itemDAO.update(item);
+        try {
+
+            itemDAO.update(item);
+
+        }catch (HibernateException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
 
     void delete(Long id){
 
-        itemDAO.delete(id);
+        try {
+
+            itemDAO.delete(id);
+
+        }catch (HibernateException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
 
     Item findById(Long id){
 
-        return itemDAO.findById(id);
+        try {
+
+            return itemDAO.findById(id);
+
+        }catch (HibernateException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
 
     List<Item> getAllFiles(){
 
-        return itemDAO.getAllFiles();
+        try {
+
+            return itemDAO.getAllFiles();
+
+        }catch (HibernateException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
 }

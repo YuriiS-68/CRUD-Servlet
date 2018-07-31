@@ -15,7 +15,7 @@ class ItemDAO {
     private static final String SQL_GET_ITEM_BY_ID = "SELECT * FROM ITEM WHERE ID = ?";
     private static final String SQL_GET_ITEM_ALL = "SELECT * FROM ITEM";
 
-    Item save(Item item) {
+    Item save(Item item){
 
         Transaction transaction = null;
         try(Session session = createSessionFactory().openSession()){
@@ -29,10 +29,12 @@ class ItemDAO {
 
         }catch (HibernateException e){
 
-            System.err.println(e.getMessage());
-
-            if (transaction != null)
+            if (transaction != null) {
                 transaction.rollback();
+            }
+
+            System.err.println("Operation failed");
+            throw e;
         }
         return item;
     }
@@ -49,10 +51,9 @@ class ItemDAO {
 
         }catch (HibernateException e){
 
-            System.err.println(e.getMessage());
-
+            System.err.println("Operation failed");
+            throw e;
         }
-
         return items;
     }
 
@@ -70,10 +71,11 @@ class ItemDAO {
 
         }catch (HibernateException e){
 
-            System.err.println(e.getMessage());
-
             if (transaction != null)
                 transaction.rollback();
+
+            System.err.println("Operation failed");
+            throw e;
         }
     }
 
@@ -91,17 +93,18 @@ class ItemDAO {
 
         }catch (HibernateException e){
 
-            System.err.println(e.getMessage());
-
             if (transaction != null)
                 transaction.rollback();
+
+            System.err.println("Operation failed");
+            throw e;
         }
     }
 
     @SuppressWarnings("unchecked")
     Item findById(Long id){
 
-        Item item = null;
+        Item item;
 
         try (Session session = createSessionFactory().openSession()){
 
@@ -111,7 +114,8 @@ class ItemDAO {
 
         }catch (HibernateException e){
 
-            System.err.println(e.getMessage());
+            System.err.println("Operation failed");
+            throw e;
         }
         return item;
     }

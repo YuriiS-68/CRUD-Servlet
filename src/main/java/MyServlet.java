@@ -1,5 +1,6 @@
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.HibernateException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +26,12 @@ public class MyServlet extends HttpServlet {
                 resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
 
         } catch (BadRequestException e) {
+
             e.printStackTrace();
+
+        }catch (HibernateException e){
+
+            resp.getWriter().println("Operation failed");
         }
     }
 
@@ -40,6 +46,10 @@ public class MyServlet extends HttpServlet {
         } catch (BadRequestException e) {
 
             resp.getWriter().println(e);
+
+        }catch (HibernateException e){
+
+            resp.getWriter().println("Operation failed");
         }
     }
 
@@ -54,6 +64,10 @@ public class MyServlet extends HttpServlet {
         } catch (BadRequestException e) {
 
             resp.getWriter().println(e);
+
+        } catch (HibernateException e){
+
+            resp.getWriter().println("Operation failed");
         }
     }
 
@@ -68,13 +82,17 @@ public class MyServlet extends HttpServlet {
         } catch (BadRequestException e) {
 
             resp.getWriter().println(e);
+
+        }catch (HibernateException e){
+
+            resp.getWriter().println("Operation failed");
         }
     }
 
     private Item mappingObject(HttpServletRequest req)throws IOException {
 
         StringBuilder stringBuilder = new StringBuilder();
-        String line = null;
+        String line;
 
         BufferedReader reader = req.getReader();
         while ((line = reader.readLine()) != null){

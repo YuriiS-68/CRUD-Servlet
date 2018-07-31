@@ -1,3 +1,5 @@
+import org.hibernate.HibernateException;
+
 import java.util.List;
 
 class ItemController {
@@ -10,7 +12,15 @@ class ItemController {
 
             validationObject(item);
 
-            return itemService.save(item);
+            try {
+
+                itemService.save(item);
+
+            }catch (HibernateException e){
+                System.err.println(e.getMessage());
+                throw e;
+            }
+            return item;
         }
         else
             throw new BadRequestException("Item with id " + item.getId() + " can`t be registered in the database");
@@ -20,14 +30,28 @@ class ItemController {
 
         validationObject(item);
 
-        itemService.update(item);
+        try {
+
+            itemService.update(item);
+
+        }catch (HibernateException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
 
     void delete(Long id)throws BadRequestException{
 
         if (findById(id) != null){
 
-            itemService.delete(id);
+            try {
+
+                itemService.delete(id);
+
+            }catch (HibernateException e){
+                System.err.println(e.getMessage());
+                throw e;
+            }
         }
         else
             throw new BadRequestException("Item with id " + id + " in the database not found");
@@ -37,14 +61,28 @@ class ItemController {
 
         if (id != null){
 
-            return itemService.findById(id);
+            try {
+
+                return itemService.findById(id);
+
+            }catch (HibernateException e){
+                System.err.println(e.getMessage());
+                throw e;
+            }
         }
         throw new BadRequestException("Item with id: " + id + " is not exist in DB.");
     }
 
     List<Item> getAllFiles(){
 
-        return itemService.getAllFiles();
+        try {
+
+            return itemService.getAllFiles();
+
+        }catch (HibernateException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
     }
     private void validationObject(Item item)throws BadRequestException{
         if (item == null)
