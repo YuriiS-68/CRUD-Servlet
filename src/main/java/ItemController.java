@@ -6,7 +6,7 @@ class ItemController {
 
     private ItemService itemService = new ItemService();
 
-    Item save(Item item)throws BadRequestException{
+    Item save(Item item)throws BadRequestException {
 
         if (item.getId() == null){
 
@@ -18,7 +18,7 @@ class ItemController {
 
             }catch (HibernateException e){
                 System.err.println(e.getMessage());
-                throw e;
+                throw new HibernateException("Operation failed");
             }
             return item;
         }
@@ -32,11 +32,17 @@ class ItemController {
 
         try {
 
-            itemService.update(item);
+            if (findById(item.getId()) != null){
+
+                itemService.update(item);
+
+            }else
+                throw new BadRequestException("Updating is not possible. Item with id - " + item.getId() +
+                " is missing in the database.");
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
-            throw e;
+            throw new HibernateException("Operation failed");
         }
     }
 
@@ -50,14 +56,14 @@ class ItemController {
 
             }catch (HibernateException e){
                 System.err.println(e.getMessage());
-                throw e;
+                throw new HibernateException("Operation failed");
             }
         }
         else
-            throw new BadRequestException("Item with id " + id + " in the database not found");
+            throw new BadRequestException("The ID - " + id + " does not exist");
     }
 
-    Item findById(Long id)throws BadRequestException{
+    Item findById(Long id){
 
         if (id != null){
 
@@ -67,10 +73,10 @@ class ItemController {
 
             }catch (HibernateException e){
                 System.err.println(e.getMessage());
-                throw e;
+                throw new HibernateException("Operation failed");
             }
         }
-        throw new BadRequestException("Item with id: " + id + " is not exist in DB.");
+        return null;
     }
 
     List<Item> getAllFiles(){
@@ -81,12 +87,12 @@ class ItemController {
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
-            throw e;
+            throw new HibernateException("Operation failed");
         }
     }
     private void validationObject(Item item)throws BadRequestException{
         if (item == null)
-            throw new NullPointerException("Item is not existing");
+            throw new BadRequestException("Item is not existing");
 
         if (item.getName() == null)
             throw new BadRequestException("Object field Name is missing.");

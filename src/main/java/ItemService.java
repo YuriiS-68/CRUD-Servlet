@@ -13,8 +13,8 @@ class ItemService {
             itemDAO.save(item);
 
         }catch (HibernateException e){
-            System.err.println("Operation failed");
-            throw e;
+            System.err.println(e.getMessage());
+            throw new HibernateException("Operation failed");
         }
         return item;
     }
@@ -27,7 +27,7 @@ class ItemService {
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
-            throw e;
+            throw new HibernateException("Operation failed");
         }
     }
 
@@ -39,7 +39,7 @@ class ItemService {
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
-            throw e;
+            throw new HibernateException("Operation failed");
         }
     }
 
@@ -51,7 +51,7 @@ class ItemService {
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
-            throw e;
+            throw new HibernateException("Operation failed");
         }
     }
 
@@ -63,7 +63,7 @@ class ItemService {
 
         }catch (HibernateException e){
             System.err.println(e.getMessage());
-            throw e;
+            throw new HibernateException("Operation failed");
         }
     }
 }

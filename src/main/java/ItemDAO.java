@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.NativeQuery;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 class ItemDAO {
@@ -33,8 +34,8 @@ class ItemDAO {
                 transaction.rollback();
             }
 
-            System.err.println("Operation failed");
-            throw e;
+            System.err.println(e.getMessage());
+            throw new HibernateException("Operation failed");
         }
         return item;
     }
@@ -42,7 +43,7 @@ class ItemDAO {
     @SuppressWarnings("unchecked")
     List<Item> getAllFiles(){
 
-        List<Item> items = null;
+        List<Item> items;
 
         try (Session session = createSessionFactory().openSession()){
 
@@ -51,8 +52,8 @@ class ItemDAO {
 
         }catch (HibernateException e){
 
-            System.err.println("Operation failed");
-            throw e;
+            System.err.println(e.getMessage());
+            throw new HibernateException("Operation failed");
         }
         return items;
     }
@@ -74,8 +75,8 @@ class ItemDAO {
             if (transaction != null)
                 transaction.rollback();
 
-            System.err.println("Operation failed");
-            throw e;
+            System.err.println(e.getMessage());
+            throw new HibernateException("Operation failed");
         }
     }
 
@@ -96,28 +97,45 @@ class ItemDAO {
             if (transaction != null)
                 transaction.rollback();
 
-            System.err.println("Operation failed");
-            throw e;
+            System.err.println(e.getMessage());
+            throw new HibernateException("Operation failed");
         }
     }
 
     @SuppressWarnings("unchecked")
-    Item findById(Long id){
+    Item findById(Long id) {
 
-        Item item;
+        Item item = null;
 
-        try (Session session = createSessionFactory().openSession()){
+        try (Session session = createSessionFactory().openSession()) {
 
-            NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_BY_ID);
+            if (id != null){
+                NativeQuery query = session.createNativeQuery(SQL_GET_ITEM_BY_ID);
 
-            item = (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
+                if (getSingleResult(query, id) == null){
 
-        }catch (HibernateException e){
-
-            System.err.println("Operation failed");
-            throw e;
+                    item = null;
+                }
+                else
+                    item = (Item) query.addEntity(Item.class).setParameter(1, id).getSingleResult();
+            }
+        } catch (HibernateException e) {
+            System.err.println(e.getMessage());
+            throw new HibernateException("Operation failed");
         }
         return item;
+    }
+
+    private <T> T getSingleResult(TypedQuery<T> query, Long id){
+        query.setMaxResults(1);
+
+        List<T> list = query.setParameter(1, id).getResultList();
+
+        if (list == null || list.isEmpty()){
+
+            return null;
+        }
+        return list.get(0);
     }
 
     private static SessionFactory createSessionFactory(){

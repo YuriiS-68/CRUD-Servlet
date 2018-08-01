@@ -18,18 +18,28 @@ public class MyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)throws IOException{
         String action = req.getParameter("param");
 
+        /*if (controller.findById(Long.parseLong(req.getParameter("param"))) != null){
+
+            resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))));
+
+        }else
+            resp.getWriter().print("The ID you entered does not exist in the database");*/
+
         try {
+
             if (action.equalsIgnoreCase("list")){
+
                 resp.getWriter().print(controller.getAllFiles());
+
             }
-            else
-                resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
+            else if (controller.findById(Long.parseLong(req.getParameter("param"))) != null){
 
-        } catch (BadRequestException e) {
+                resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))));
 
-            e.printStackTrace();
+            }else
+                resp.getWriter().print("The ID you entered does not exist in the database");
 
-        }catch (HibernateException e){
+        } catch (HibernateException e){
 
             resp.getWriter().println("Operation failed");
         }

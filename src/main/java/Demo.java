@@ -22,7 +22,7 @@ public class Demo {
         //itemDAO.update(item2);
         //itemDAO.delete(2L);
 
-        //System.out.println(itemDAO.findById(2));
+        //System.out.println(itemDAO.findById(468L));
 
     }
 }
